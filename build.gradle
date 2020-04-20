@@ -17,7 +17,7 @@ archivesBaseName = 'customlanport'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
-    mappings channel: 'snapshot', version: '20191213-1.15.1'
+    mappings channel: 'snapshot', version: '20200111-mixed-1.15.1'
     // access transformer
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -66,7 +66,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.1-30.0.20'
+    minecraft 'net.minecraftforge:forge:1.15.1-30.0.41'
 }
 
 jar {
