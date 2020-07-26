@@ -8,60 +8,40 @@ import net.minecraft.world.GameType
 import thedarkcolour.customlanport.config.Config
 
 class CustomShareToLanScreen(toReplace: ShareToLanScreen) : ShareToLanScreen(toReplace.lastScreen) {
-    //private lateinit var chosenPortWidget: NumberWidget
     private lateinit var startGameButton: Button
 
     override fun init() {
         super.init()
-        //chosenPortWidget = NumberWidget(this)
+        removeOpenButton()
+        startGameButton = addButton(Button(width / 2 - 155, height - 28, 150, 20, TranslationTextComponent("lanServer.start"), ::openToLan))
+    }
+
+    /**
+     * Removes the original Open to Lan button so we can replace its functionality.
+     */
+    private fun removeOpenButton() {
         buttons.removeIf {
-            it.message == I18n.format("lanServer.start")
+            it.message == TranslationTextComponent("lanServer.start")
         }
         children.removeIf {
             if (it is Button) {
-                it.message == I18n.format("lanServer.start")
+                it.message == TranslationTextComponent("lanServer.start")
             } else {
                 false
             }
         }
-        startGameButton = addButton(Button(
-                width / 2 - 155,
-                height - 28, 150, 20, I18n.format("lanServer.start"), Button.IPressable {
-            val i = Config.port
-            minecraft!!.displayGuiScreen(null)
-            if (minecraft!!.integratedServer!!.shareToLAN(GameType.getByName(gameMode), allowCheats, i)) {
-                minecraft!!.ingameGUI.chatGUI.printChatMessage(TranslationTextComponent("commands.publish.started", i))
-            } else {
-                minecraft!!.ingameGUI.chatGUI.printChatMessage(TranslationTextComponent("commands.publish.failed", i))
-            }
-        }))
     }
-/*
-    class NumberWidget(gui: CustomShareToLanScreen) : TextFieldWidget(gui.font, gui.width / 2 - 155, gui.height - 28, 100, 20, "25565") {
-        init {
-            setMaxStringLength(5)
+
+    /**
+     * Opens the world to Lan.
+     */
+    private fun openToLan(button: Button) {
+        val i = Config.port
+        minecraft!!.displayGuiScreen(null)
+        if (minecraft!!.integratedServer!!.shareToLAN(GameType.getByName(gameMode), allowCheats, i)) {
+            minecraft!!.ingameGUI.chatGUI.printChatMessage(TranslationTextComponent("commands.publish.started", i))
+        } else {
+            minecraft!!.ingameGUI.chatGUI.printChatMessage(TranslationTextComponent("commands.publish.failed", i))
         }
-
-        override fun writeText(msg: String) {
-            if (!StringUtils.isNumeric(msg)) {
-                return
-            }
-            super.writeText(msg)
-
-            //try {
-            //    Minecraft.getInstance().integratedServer!!.networkSystem!!.addEndpoint(null, gui.chosenPortWidget.port)
-            //} catch (e: IOException) {
-            //    setTextColor(0xAA0000)
-            //    gui.startGameButton.active = false
-            //    return
-            //} catch (e: NullPointerException) {
-            //    setTextColor(0xAA0000)
-            //    return
-            //}
-            //Minecraft.getInstance().integratedServer!!.networkSystem!!.
-        }
-
-        val port: Int
-            get() = Integer.parseInt(message)
-    }*/
+    }
 }

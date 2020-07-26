@@ -6,22 +6,22 @@ object Config {
     var port: Int = 0
 
     fun refresh() {
-        port = ConfigHolder.CFG.portCfg.get()
+        port = ConfigHolder.COMMON.portCfg.get()
     }
 }
 
 object ConfigHolder {
-    val CFG: _Internal
+    val COMMON: CommonConfig
     val SPEC: ForgeConfigSpec
 
     init {
-        val specPair = ForgeConfigSpec.Builder().configure(::_Internal)
-        CFG = specPair.left
+        val specPair = ForgeConfigSpec.Builder().configure(::CommonConfig)
+        COMMON = specPair.left
         SPEC = specPair.right
     }
 }
 
-class _Internal(builder: ForgeConfigSpec.Builder) {
+class CommonConfig(builder: ForgeConfigSpec.Builder) {
     val portCfg: ForgeConfigSpec.IntValue = builder
             .comment("Choose the LAN port.")
             .translation("customlanport.config.port")

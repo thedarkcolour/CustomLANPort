@@ -1,23 +1,26 @@
 buildscript {
     repositories {
+        maven { url = 'https://dl.bintray.com/kotlin/kotlin-eap' }
         maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.4-M2'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'kotlin'
 
-version = '1.0.0'
+version = '1.1.0'
 group = 'thedarkcolour.customlanport' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'customlanport'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200111-mixed-1.15.1'
+    mappings channel: 'snapshot', version: '20200723-1.16.1'
     // access transformer
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -25,8 +28,8 @@ minecraft {
         client {
             workingDirectory project.file('run')
 
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
+            property 'fml.earlyprogresswindow', 'false'
 
             mods {
                 customlanport {
@@ -38,7 +41,6 @@ minecraft {
         server {
             workingDirectory project.file('run')
 
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
 
             mods {
@@ -51,7 +53,6 @@ minecraft {
         data {
             workingDirectory project.file('run')
 
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
 
             args '--mod', 'customlanport', '--all', '--output', file('src/generated/resources/')
@@ -65,34 +66,11 @@ minecraft {
     }
 }
 
-dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.1-30.0.41'
-}
-
-jar {
-    manifest {
-        attributes([
-            "Specification-Title": "examplemod",
-            "Specification-Vendor": "examplemodsareus",
-            "Specification-Version": "1", // We are version 1 of ourselves
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"examplemodsareus",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
-}
-
-buildscript {
-    dependencies {
-        // Make sure to use the correct version
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61"
-    }
-}
-
-apply plugin: 'kotlin'
-
 repositories {
+    maven {
+        name = 'Kotlin Early Access'
+        url = 'https://dl.bintray.com/kotlin/kotlin-eap'
+    }
     maven {
         name = 'kotlinforforge'
         url = 'https://thedarkcolour.github.io/KotlinForForge/'
@@ -100,18 +78,30 @@ repositories {
 }
 
 dependencies {
-    // Uses the latest version of KotlinForForge
-    implementation 'thedarkcolour:kotlinforforge:1.0.1'
+    // Use the latest version of Minecraft Forge
+    minecraft 'net.minecraftforge:forge:1.16.1-32.0.71'
+
+    implementation 'thedarkcolour:kotlinforforge:1.3.1'
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title": "customlanport",
+                "Specification-Vendor": "TheDarkColour",
+                "Specification-Version": "1", // We are version 1 of ourselves
+                "Implementation-Title": project.name,
+                "Implementation-Version": "${version}",
+                "Implementation-Vendor" :"TheDarkColour",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
 }
 
 compileKotlin {
-    // Needed if you use Forge.kt
     kotlinOptions {
         jvmTarget = '1.8'
-    }
-
-    // Required to run in dev environment
-    copy {
-        from "$buildDir/classes/kotlin" into "$buildDir/classes/java"
+        languageVersion = '1.4'
+        apiVersion = '1.4'
     }
 }
