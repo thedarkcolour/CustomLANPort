@@ -1,5 +1,5 @@
 modLoader="kotlinforforge"
-loaderVersion="[1.3,)"
+loaderVersion="[1,)"
 
 [[mods]] #mandatory
 modId="customlanport" #mandatory
